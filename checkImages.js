@@ -1,8 +1,8 @@
 var checkRatio = (img) => {
     let ratio = img.width / img.height;
     let naturalRatio = img.naturalWidth / img.naturalHeight;
-    if( ratio !== naturalRatio ) {
-        console.log(`${ratio} !== ${naturalRatio}`);
+    if( ratio > 0 && ratio !== naturalRatio ) {
+        console.log(`${ratio - naturalRatio}`);
         console.log({img});
     }
 };
