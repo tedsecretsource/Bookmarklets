@@ -1,8 +1,13 @@
 var checkRatio = (img) => {
-
+    let ratio = img.width / img.height;
+    let naturalRatio = img.naturalWidth / img.naturalHeight;
+    if( ratio !== naturalRatio ) {
+        console.log('oops');
+        console.log({img});
+    }
 };
 
 var imgs = document.querySelectorAll("img:not([src=''])");
 imgs.forEach( (img) => {
-    console.log({img});
+    checkRatio(img);
 });
