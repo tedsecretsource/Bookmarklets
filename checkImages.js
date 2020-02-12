@@ -1,7 +1,8 @@
-var checkRatio = (img) => {
+var ratioIsCorrect = (img) => {
     let ratio = img.width / img.height;
     let naturalRatio = img.naturalWidth / img.naturalHeight;
-    if( ratio > 0 && ratio !== naturalRatio ) {
+    if( ratio > 0 && Math.abs(ratio - naturalRatio) > 0.003 ) {
+        // return false;
         console.log(`${ratio - naturalRatio}`);
         console.log({img});
     }
@@ -9,5 +10,5 @@ var checkRatio = (img) => {
 
 var imgs = document.querySelectorAll("img:not([src=''])");
 imgs.forEach( (img) => {
-    checkRatio(img);
+    ratioIsCorrect(img);
 });
