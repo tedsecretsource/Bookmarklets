@@ -1,0 +1,1 @@
+javascript:(function(){s=document.createElement('script');s.type='text/javascript';s.src='https://raw.githubusercontent.com/tedsecretsource/Bookmarklets/master/bookmarklet.js?v='+parseInt(Math.random()*99999999);document.body.appendChild(s);})();
