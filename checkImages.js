@@ -10,8 +10,7 @@ var ratioIsCorrect = (img) => {
         // return false;
         console.log(`${ratio - naturalRatio}`);
         console.log({img});
-        img.style.borderWidth = Math.round(img.width * 0.1) + 'px';
-        img.style.borderColor = 'red';
+        img.style.border = '2px solid red';
     }
 };
 
