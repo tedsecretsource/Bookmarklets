@@ -9,7 +9,7 @@ var ratioIsCorrect = (img) => {
     if( ratio > 0 && Math.abs(ratio - naturalRatio) >= 0.02 ) {
         // return false;
         console.log(`${ratio - naturalRatio}`);
-        console.log({img});
+        console.log(img.src, img.alt, img.style.objectFit);
         img.style.border = '2px solid red';
     }
 };
