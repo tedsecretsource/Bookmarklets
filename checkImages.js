@@ -8,8 +8,9 @@ var ratioIsCorrect = (img) => {
     let naturalRatio = img.naturalWidth / img.naturalHeight;
     if( ratio > 0 && Math.abs(ratio - naturalRatio) >= 0.02 ) {
         // return false;
+        var style = window.getComputedStyle(img);
         console.log(`${ratio - naturalRatio}`);
-        console.log(img.src, img.alt, img.style.objectFit);
+        console.log(img.src, img.alt, style);
         img.style.border = '2px solid red';
     }
 };
