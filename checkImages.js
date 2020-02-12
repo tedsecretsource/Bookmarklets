@@ -1,8 +1,8 @@
-const checkRatio = (img) => {
+var checkRatio = (img) => {
 
 };
 
-let imgs = document.querySelectorAll("img:not([src=''])");
+var imgs = document.querySelectorAll("img:not([src=''])");
 imgs.forEach( (img) => {
     console.log({img});
 });
