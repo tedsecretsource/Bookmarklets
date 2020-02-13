@@ -39,4 +39,5 @@ console.log({dpi});
 var imgs = document.querySelectorAll("img:not([src=''])");
 imgs.forEach( (img) => {
     ratioIsCorrect(img);
+    checkImgResolution(img);
 });
