@@ -18,13 +18,31 @@ var ratioIsCorrect = (img) => {
 };
 
 var checkImgResolution = (img) => {
+    let re = /[0-9]+/;
     let style = window.getComputedStyle(img);
-    var devicePixelRatio = window.devicePixelRatio || 1;
-    
-    
+    let logicalWidth = re.exec(style.width)[0];
+    let naturalMaxWidth = img.naturalWidth * parseInt(dpi);
+    let actualWidth = logicalWidth * parseInt(dpi);
+
     console.log({img});
     console.log({style});
+    console.log(`natural - actual = ${naturalMaxWidth - actualWidth}`);
 }
+
+
+// one way of determining the resolution
+// var testelem = document.createElement('div');
+// var devicePixelRatio = window.devicePixelRatio || 1;
+// testelem.setAttribute('id', 'testdiv');
+// testelem.setAttribute('style', 'height: 1in; left: -100%; position: absolute; top: -100%; width: 1in;');
+// document.querySelector('body').appendChild(testelem);
+// dpi_x = document.getElementById('testdiv').offsetWidth * devicePixelRatio;
+// dpi_y = document.getElementById('testdiv').offsetHeight * devicePixelRatio;
+// console.log({dpi_x}, {dpi_y});
+
+/**
+ * A better way to determine the resolution
+ */
 
 // Binary search, (faster then loop)
 // also don't test every possible value, since it tries low, mid, and high
@@ -34,17 +52,9 @@ function findFirstPositive(b, a, i, c) {
     for (i = 1; 0 >= b(i);) i *= 2
     return c(i / 2, i)|0
 }
-
-var testelem = document.createElement('div');
-testelem.setAttribute('id', 'testdiv');
-testelem.setAttribute('style', 'height: 1in; left: -100%; position: absolute; top: -100%; width: 1in;');
-document.querySelector('body').appendChild(testelem);
-dpi_x = document.getElementById('testdiv').offsetWidth * devicePixelRatio;
-dpi_y = document.getElementById('testdiv').offsetHeight * devicePixelRatio;
-console.log({dpi_x}, {dpi_y});
-
 var dpi = findFirstPositive(x => matchMedia(`(max-resolution: ${x}dpi)`).matches);
 console.log({dpi});
+
 var imgs = document.querySelectorAll("img:not([src=''])");
 imgs.forEach( (img) => {
     ratioIsCorrect(img);
