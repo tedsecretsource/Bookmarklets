@@ -8,7 +8,7 @@ var ratioIsCorrect = (img) => {
     let style = window.getComputedStyle(img);
     if( ratio > 0 && Math.abs(ratio - naturalRatio) >= 0.02 && '' === style.objectFit ) {
         // return false;
-        console.log(`${ratio - naturalRatio}`);
+        console.log(`${img.src} has incorrect ratio. Off by ${ratio - naturalRatio}`);
         console.log(img.src, img.alt, style.objectFit);
         // img.style.border = '2px solid red';
         let elem = document.createElement('div');
@@ -19,6 +19,8 @@ var ratioIsCorrect = (img) => {
 
 var checkImgResolution = (img) => {
     let style = window.getComputedStyle(img);
+    var devicePixelRatio = window.devicePixelRatio || 1;
+    
     
     console.log({img});
     console.log({style});
@@ -33,6 +35,17 @@ function findFirstPositive(b, a, i, c) {
     return c(i / 2, i)|0
 }
 
+var testelem = document.createElement('div');
+var teststyle = document.createAttribute('style');
+var testid = document.createAttribute('id');
+teststyle.nodeValue = 'height: 1in; left: -100%; position: absolute; top: -100%; width: 1in;';
+testid.nodeValue = 'testdiv';
+testelem.appendChild(testid);
+testelem.appendChild(teststyle);
+document.querySelector('body').appendChild(testelem);
+dpi_x = document.getElementById('testdiv').offsetWidth * devicePixelRatio;
+dpi_y = document.getElementById('testdiv').offsetHeight * devicePixelRatio;
+console.log({dpi_x}, {dpi_y});
 
 var dpi = findFirstPositive(x => matchMedia(`(max-resolution: ${x}dpi)`).matches);
 console.log({dpi});
