@@ -36,12 +36,8 @@ function findFirstPositive(b, a, i, c) {
 }
 
 var testelem = document.createElement('div');
-var teststyle = document.createAttribute('style');
-var testid = document.createAttribute('id');
-teststyle.nodeValue = 'height: 1in; left: -100%; position: absolute; top: -100%; width: 1in;';
-testid.nodeValue = 'testdiv';
-testelem.appendChild(testid);
-testelem.appendChild(teststyle);
+testelem.setAttribute('id', 'testdiv');
+testelem.setAttribute('style', 'height: 1in; left: -100%; position: absolute; top: -100%; width: 1in;');
 document.querySelector('body').appendChild(testelem);
 dpi_x = document.getElementById('testdiv').offsetWidth * devicePixelRatio;
 dpi_y = document.getElementById('testdiv').offsetHeight * devicePixelRatio;
