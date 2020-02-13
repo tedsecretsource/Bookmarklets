@@ -20,14 +20,14 @@ var ratioIsCorrect = (img) => {
 var checkImgResolution = (img) => {
     let re = /[0-9]+/;
     let style = window.getComputedStyle(img);
+    console.log({img});
+    console.log({style});
     let logicalWidth = re.exec(style.width);
     console.log(logicalWidth);
     logicalWidth = logicalWidth.length > 0 ? logicalWidth[0] : 0;
     let naturalMaxWidth = img.naturalWidth * parseInt(dpi);
     let actualWidth = logicalWidth * parseInt(dpi);
 
-    console.log({img});
-    console.log({style});
     console.log(`natural - actual = ${naturalMaxWidth - actualWidth}`);
 }
 
