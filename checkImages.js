@@ -25,7 +25,8 @@ var checkImgResolution = (img) => {
     let logicalWidth = re.exec(style.width);
     console.log(logicalWidth);
     logicalWidth = logicalWidth != null ? logicalWidth[0] : parseInt(img.width);
-    let naturalMaxWidth = img.naturalWidth * parseInt(dpi);
+    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/naturalWidth
+    let naturalMaxWidth = img.naturalWidth;
     let actualWidth = logicalWidth * parseInt(dpi);
 
     console.log(`natural - actual = ${naturalMaxWidth - actualWidth}`);
