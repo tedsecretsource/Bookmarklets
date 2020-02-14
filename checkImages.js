@@ -1,6 +1,6 @@
 /**
  * Determine if the display ratio of an image is the same as its natural ratio
- * @param {*} img An image element from the source
+ * @param {img} An image element from the source
  */
 var ratioIsCorrect = (img) => {
     let ratio = img.width / img.height;
@@ -17,7 +17,22 @@ var ratioIsCorrect = (img) => {
     }
 };
 
+/**
+ * offsetWidth and offsetHeight take into account the visibility of an element (0 if invisible)
+ * naturalWidth and naturalHeight are the size of the image if there is no bounding box constraining it (which there almost always is)
+ * width and height are either the actual screen pixel width and height or whatever is specified in the corresponding attributes
+ */
+
 var checkImgResolution = (img) => {
+    if(img.offsetWidth > 0) {
+        // the image is visible
+        console.log(`Computed naturalWidth: ${img.offsetWidth / dpi}`);
+        console.log(`Actual naturalWidth: ${img.naturalWidth}`);
+        console.log(`The above values should be the same except where the image is constrained by a container`);
+    } else {
+        // the image is hidden
+        console.log(`Skipping ${img.src} because it is not visible`);
+    }
     let re = /[0-9]+/;
     let style = window.getComputedStyle(img);
     console.log({img});
@@ -25,7 +40,19 @@ var checkImgResolution = (img) => {
     let logicalWidth = re.exec(style.width);
     console.log(logicalWidth);
     logicalWidth = logicalWidth != null ? logicalWidth[0] : parseInt(img.width);
-    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/naturalWidth
+    /**
+     * returns the intrinsic (natural), density-corrected width of the image in CSS pixels
+     * This natural width is corrected for the pixel density of the device on which it's being 
+     * presented, unlike the value of width.
+     * https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/naturalWidth
+     * 
+     * it generally suffices to say that when the unit px is used, the goal is to try to have 
+     * the distance 96px equal about 1 inch on the screen, regardless of the actual pixel 
+     * density of the screen. In other words, if the user is on a phone with a pixel density 
+     * of 266 DPI, and an element is placed on the screen with a width of 96px, the actual 
+     * width of the element would be 266 device pixels.
+     * https://developer.mozilla.org/en-US/docs/Glossary/CSS_pixel
+     */
     let naturalMaxWidth = img.naturalWidth;
     let actualWidth = logicalWidth * parseInt(dpi);
 
