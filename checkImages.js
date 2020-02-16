@@ -68,12 +68,15 @@ function findFirstPositive(b, a, i, c) {
     for (i = 1; 0 >= b(i);) i *= 2
     return c(i / 2, i)|0
 }
-// https://stackoverflow.com/questions/279749/detecting-the-system-dpi-ppi-from-js-css#answer-35941703
-var dpi = findFirstPositive(x => matchMedia(`(max-resolution: ${x}dpi)`).matches);
-console.log({dpi});
 
-var imgs = document.querySelectorAll("img:not([src=''])");
-imgs.forEach( (img) => {
-    ratioIsCorrect(img);
-    checkImgResolution(img);
-});
+window.addEventListener('load', (event) => {
+    // https://stackoverflow.com/questions/279749/detecting-the-system-dpi-ppi-from-js-css#answer-35941703
+    var dpi = findFirstPositive(x => matchMedia(`(max-resolution: ${x}dpi)`).matches);
+    console.log({dpi});
+
+    var imgs = document.querySelectorAll("img:not([src=''])");
+    imgs.forEach( (img) => {
+        ratioIsCorrect(img);
+        checkImgResolution(img);
+    });
+}
