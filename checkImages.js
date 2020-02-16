@@ -22,24 +22,24 @@ var ratioIsCorrect = (img) => {
  * naturalWidth and naturalHeight are the size of the image if there is no bounding box constraining it (which there almost always is)
  * width and height are either the actual screen pixel width and height or whatever is specified in the corresponding attributes
  */
-
 var checkImgResolution = (img) => {
+    console.log({img});
     if(img.offsetWidth > 0) {
         // the image is visible
-        console.log(`Computed naturalWidth: ${img.offsetWidth / dpi}`);
-        console.log(`Actual naturalWidth: ${img.naturalWidth}`);
-        console.log(`The above values should be the same except where the image is constrained by a container`);
+        // naturalWidth / dpi * offsetWidth = maxWidthForDevice
+        // maxWidthForDevice < width, fail : success
+        let maxWidthForDevice = (img.naturalWidth / dpi) * 96;
+        console.log(`maxWidthForDevice: ${maxWidthForDevice}`);
+        console.log(`Actual width: ${img.width}`);
+        if(maxWidthForDevice < img.width) {
+            console.log('FAIL');
+        } else {
+            console.log('PASS');
+        }
     } else {
         // the image is hidden
         console.log(`Skipping ${img.src} because it is not visible`);
     }
-    let re = /[0-9]+/;
-    let style = window.getComputedStyle(img);
-    console.log({img});
-    console.log({style});
-    let logicalWidth = re.exec(style.width);
-    console.log(logicalWidth);
-    logicalWidth = logicalWidth != null ? logicalWidth[0] : parseInt(img.width);
     /**
      * returns the intrinsic (natural), density-corrected width of the image in CSS pixels
      * This natural width is corrected for the pixel density of the device on which it's being 
@@ -53,25 +53,11 @@ var checkImgResolution = (img) => {
      * width of the element would be 266 device pixels.
      * https://developer.mozilla.org/en-US/docs/Glossary/CSS_pixel
      */
-    let naturalMaxWidth = img.naturalWidth;
-    let actualWidth = logicalWidth * parseInt(dpi);
-
-    console.log(`natural - actual = ${naturalMaxWidth - actualWidth}`);
 }
 
 
-// one way of determining the resolution
-// var testelem = document.createElement('div');
-// var devicePixelRatio = window.devicePixelRatio || 1;
-// testelem.setAttribute('id', 'testdiv');
-// testelem.setAttribute('style', 'height: 1in; left: -100%; position: absolute; top: -100%; width: 1in;');
-// document.querySelector('body').appendChild(testelem);
-// dpi_x = document.getElementById('testdiv').offsetWidth * devicePixelRatio;
-// dpi_y = document.getElementById('testdiv').offsetHeight * devicePixelRatio;
-// console.log({dpi_x}, {dpi_y});
-
 /**
- * A better way to determine the resolution
+ * A better way to determine the resolution / pixel density
  */
 
 // Binary search, (faster then loop)
@@ -82,6 +68,7 @@ function findFirstPositive(b, a, i, c) {
     for (i = 1; 0 >= b(i);) i *= 2
     return c(i / 2, i)|0
 }
+// https://stackoverflow.com/questions/279749/detecting-the-system-dpi-ppi-from-js-css#answer-35941703
 var dpi = findFirstPositive(x => matchMedia(`(max-resolution: ${x}dpi)`).matches);
 console.log({dpi});
 

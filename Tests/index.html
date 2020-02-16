@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Image Tester</title>
+	<meta name="generator" content="BBEdit Prerelease" />
+	<meta name="viewport" content="initial-scale=1">
+	<style>
+	body {
+		width: 300px;
+		max-width: 300px;
+	}
+	
+	img {
+		object-fit: contain;
+	}
+	
+	img#imga {
+		width: 1in;
+	}
+	
+	div#id800x600a {
+		width: 200px;
+	}
+	</style>
+	<script>
+	window.addEventListener('load', (event) => {
+		let imga = document.getElementById('imgb');
+		console.log(imga.offsetWidth);
+		console.log(imga.width);
+		console.log(imga.naturalWidth);
+		console.log({imga});
+
+function findFirstPositive(b, a, i, c) {
+    c=(d,e)=>e>=d?(a=d+(e-d)/2,0<b(a)&&(a==d||0>=b(a-1))?a:0>=b(a)?c(a+1,e):c(d,a-1)):-1
+    for (i = 1; 0 >= b(i);) i *= 2
+    return c(i / 2, i)|0
+}
+// https://stackoverflow.com/questions/279749/detecting-the-system-dpi-ppi-from-js-css#answer-35941703
+var dpi = findFirstPositive(x => matchMedia(`(max-resolution: ${x}dpi)`).matches);
+console.log({dpi});
+
+	});
+	</script>
+</head>
+<body>
+	<div id="id400x300">
+	<p>This is 400x300</p>
+	<img src="400x300.jpg">
+	</div>
+	<div id="id400x300a">
+	<p>This is 400x300 @ 192</p>
+	<img src="400x300-192dpi.jpg" id="imgb">
+	</div>
+	<div id="id800x600a">
+	<p>This is 800x600</p>
+	<img src="800x600.jpg" id="imga">
+	</div>
+	<div id="id800x600">
+	<p>This is 800x600</p>
+	<img src="800x600.jpg">
+	</div>
+</body>
+</html>
