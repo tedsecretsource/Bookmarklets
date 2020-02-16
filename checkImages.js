@@ -79,4 +79,4 @@ window.addEventListener('load', (event) => {
         ratioIsCorrect(img);
         checkImgResolution(img);
     });
-}
+});
