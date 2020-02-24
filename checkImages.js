@@ -25,17 +25,40 @@ window.addEventListener('load', (event) => {
      * width and height are either the actual screen pixel width and height or whatever is specified in the corresponding attributes
      */
     var checkImgResolution = (img) => {
-        console.log({img});
+        let style = window.getComputedStyle(img);
+        let imageNaturalWidth = img.naturalWidth;
+
+        // base naturalWidth on current src if srcset is present
+        if(img.srcset !== '') {
+            let tempimg = document.createElement('img');
+            tempimg.setAttribute('src', img.currentSrc);
+            tempimg.setAttribute('style', 'margin-top: -5000px; margin-left: -5000px');
+            let tempimghandler = document.querySelector('body').appendChild(tempimg);
+            imageNaturalWidth = tempimg.naturalWidth;
+            document.querySelector('body').removeChild(tempimg);
+        }
+
         if(img.offsetWidth > 0) {
             // the image is visible
             // naturalWidth / dpi * offsetWidth = maxWidthForDevice
             // maxWidthForDevice < width, fail : success
-            let maxWidthForDevice = (img.naturalWidth / dpi) * 96;
-            console.log(`maxWidthForDevice: ${maxWidthForDevice}`);
-            console.log(`Actual width: ${img.width}`);
+            let maxWidthForDevice = Math.floor((imageNaturalWidth / dpi) * 96);
+            let res1 = document.querySelector(`#${img.parentNode.getAttribute('id')} span.res1`);
             if(maxWidthForDevice < img.width) {
+                res1.textContent = 'FAIL';
+                res1.classList.add('fail');
+                let expectedWidth = document.createElement('p');
+                let actualWidth = document.createElement('p');
+                expectedWidth.classList.add("fail");
+                actualWidth.classList.add("fail");
+                expectedWidth.textContent = `Expected width: ${maxWidthForDevice}px or less`;
+                actualWidth.textContent = `Actual width: ${img.width}px`;
+                res1.insertAdjacentElement("afterend", expectedWidth);
+                expectedWidth.insertAdjacentElement("afterend", actualWidth);
                 console.log('FAIL');
             } else {
+                res1.textContent = 'PASS';
+                res1.classList.add('pass');
                 console.log('PASS');
             }
         } else {
@@ -57,23 +80,7 @@ window.addEventListener('load', (event) => {
          */
     }
     
-    
-    /**
-     * A better way to determine the resolution / pixel density
-     */
-    
-    // Binary search, (faster then loop)
-    // also don't test every possible value, since it tries low, mid, and high
-    // http://www.geeksforgeeks.org/find-the-point-where-a-function-becomes-negative/
-    function findFirstPositive(b, a, i, c) {
-        c=(d,e)=>e>=d?(a=d+(e-d)/2,0<b(a)&&(a==d||0>=b(a-1))?a:0>=b(a)?c(a+1,e):c(d,a-1)):-1
-        for (i = 1; 0 >= b(i);) i *= 2
-        return c(i / 2, i)|0
-    }
-    // https://stackoverflow.com/questions/279749/detecting-the-system-dpi-ppi-from-js-css#answer-35941703
-    var dpi = findFirstPositive(x => matchMedia(`(max-resolution: ${x}dpi)`).matches);
-    console.log({dpi});
-
+    var dpi = window.devicePixelRatio * 96;
     var imgs = document.querySelectorAll("img:not([src=''])");
     imgs.forEach( (img) => {
         ratioIsCorrect(img);
