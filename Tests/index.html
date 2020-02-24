@@ -3,44 +3,59 @@
 <head>
 	<meta charset="utf-8" />
 	<title>Image Tester</title>
-	<meta name="generator" content="BBEdit Prerelease" />
-	<meta name="viewport" content="initial-scale=1">
 	<style>
-	body {
+	/* body {
 		width: 300px;
 		max-width: 300px;
 	}
 	
 	img {
 		object-fit: contain;
+	} */
+	.fail {
+		color: red;
 	}
-	
-	img#imga {
-		width: 1in;
-	}
-	
-	div#id800x600a {
-		width: 200px;
+
+	.pass {
+		color: green;
 	}
 	</style>
+	<script defer src="../checkImages.js?v=2"></script>
 </head>
 <body>
-	<div id="id400x300">
-	<p>This is 400x300</p>
-	<img src="400x300.jpg">
+	<div id="full-size-display-none">
+		<h1>Full size, display none</h1>
+		<img src="1280x1600.jpg" style="display:none" style="width: 160px">
+		<p>Test Result: <span class="res1"></span></p>
 	</div>
-	<div id="id400x300a">
-	<p>This is 400x300 @ 192</p>
-	<img src="400x300-192dpi.jpg" id="imgb">
+	<div id="full-size">
+		<h1>Full size</h1>
+		<img src="1280x1600.jpg" style="width: 160px">
+		<p>Test Result: <span class="res1"></span></p>
 	</div>
-	<div id="id800x600a">
-	<p>This is 800x600</p>
-	<img src="800x600.jpg" id="imga">
+	<div id="half-size">
+		<h1>Half size</h1>
+		<img src="640x800.jpg" style="width: 160px">
+		<p>Test Result: <span class="res1"></span></p>
 	</div>
-	<div id="id800x600">
-	<p>This is 800x600</p>
-	<img src="800x600.jpg">
+	<div id="quarter-size">
+		<h1>Quarter size</h1>
+		<img src="320x400.jpg" style="width: 160px">
+		<p>Test Result: <span class="res1"></span></p>
 	</div>
-	<script src="https://tedsecretsource.github.io/Bookmarklets/bookmarklet.js"></script>
+	<div id="eighth-size">
+		<h1>Eighth size</h1>
+		<img src="160x200.jpg" style="width: 160px">
+		<p>Test Result: <span class="res1"></span></p>
+	</div>
+	<div id="srcset">
+		<h1>Test srcset Attribute</h1>
+		<img 
+			src="1280x1600.jpg" 
+			srcset="160x200.jpg, 320x400.jpg 2x, 640x800.jpg 3x, 1280x1600.jpg 4x"
+			style="width: 160px"
+		>
+		<p>Test Result: <span class="res1"></span></p>
+	</div>
 </body>
 </html>
