@@ -1,8 +1,15 @@
 
 window.addEventListener('load', (event) => {
     /**
-     * Determine if the display ratio of an image is the same as its natural ratio
+     * Determine if the display ratio of an image is the same as its
+     * natural ratio
+     * 
+     * Returns true if the display ratio is the same as the native pixel
+     * ratio of the image. If the display ratio is not the same, the 
+     * image will appear distored and the function will return false.
+     * 
      * @param {img} An image element from the source
+     * @returns True if the display ratio is the same as the natural ratio, false otherwise
      */
     var ratioIsCorrect = (img) => {
         let ratio = img.width / img.height;
@@ -16,8 +23,59 @@ window.addEventListener('load', (event) => {
             let elem = document.createElement('div');
             elem.nodeValue = `Image is not proportional`;
             img.parentNode.appendChild(elem);
+            return false;
         }
+        return true;
     };
+
+    /**
+     * Returns an integer representing the actual width of the source image
+     * @param {*} img
+     * @returns Integer The actual width of the source image
+     */
+    var getNaturalWidth = (img) => {
+        let imageNaturalWidth = img.naturalWidth;
+        if(img.srcset !== '') {
+            let tempimg = document.createElement('img');
+            tempimg.setAttribute('src', img.currentSrc);
+            tempimg.setAttribute('style', 'margin-top: -5000px; margin-left: -5000px');
+            document.querySelector('body').appendChild(tempimg);
+            imageNaturalWidth = tempimg.naturalWidth;
+            document.querySelector('body').removeChild(tempimg);
+        }
+        return imageNaturalWidth;
+    }
+    
+    /**
+     * Returns an integer representing the maximum width of the image in
+     * pixels for this device
+     * 
+     * Given a DOM image object, get the maximum width the image can be
+     * displayed at for this device without noticable loss of quality.
+     * Note that to calculate this, we convert from natural pixel width
+     * to device pixel width.
+     * 
+     * @param {*} img 
+     * @returns Integer The maximum width of the image in pixels for this device
+     */
+    var getMaxWidthForDevice = (img) => {
+        return Math.floor(img.imageNaturalWidth / window.devicePixelRatio);
+    }
+
+    /**
+     * Returns true if the image has the minimum resolution required to
+     * display at the specified width without noticable loss of quality
+     * @param {*} imgObj 
+     */
+    var hasMinimumDisplayResolution = (imgObj) => {
+        let img = imgObj.img;
+        let maxWidthForDevice = imgObj.maxWidthForDevice;
+        if(maxWidthForDevice >= img.width) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     /**
      * offsetWidth and offsetHeight take into account the visibility of an element (0 if invisible)
@@ -25,26 +83,14 @@ window.addEventListener('load', (event) => {
      * width and height are either the actual screen pixel width and height or whatever is specified in the corresponding attributes
      */
     var checkImgResolution = (img) => {
-        let style = window.getComputedStyle(img);
-        let imageNaturalWidth = img.naturalWidth;
-
-        // base naturalWidth on current src if srcset is present
-        if(img.srcset !== '') {
-            let tempimg = document.createElement('img');
-            tempimg.setAttribute('src', img.currentSrc);
-            tempimg.setAttribute('style', 'margin-top: -5000px; margin-left: -5000px');
-            let tempimghandler = document.querySelector('body').appendChild(tempimg);
-            imageNaturalWidth = tempimg.naturalWidth;
-            document.querySelector('body').removeChild(tempimg);
-        }
-
         if(img.offsetWidth > 0) {
-            // the image is visible
-            // naturalWidth / dpi * offsetWidth = maxWidthForDevice
-            // maxWidthForDevice < width, fail : success
-            let maxWidthForDevice = Math.floor((imageNaturalWidth / dpi) * 96);
+            let maxWidthForDevice = getMaxWidthForDevice({img: img, imageNaturalWidth: getNaturalWidth(img)});
             let res1 = document.querySelector(`#${img.parentNode.getAttribute('id')} span.res1`);
-            if(maxWidthForDevice < img.width) {
+            if(hasMinimumDisplayResolution({img: img, maxWidthForDevice: maxWidthForDevice})) {
+                res1.textContent = 'PASS';
+                res1.classList.add('pass');
+                console.log('PASS');
+            } else {
                 res1.textContent = 'FAIL';
                 res1.classList.add('fail');
                 let expectedWidth = document.createElement('p');
@@ -56,10 +102,6 @@ window.addEventListener('load', (event) => {
                 res1.insertAdjacentElement("afterend", expectedWidth);
                 expectedWidth.insertAdjacentElement("afterend", actualWidth);
                 console.log('FAIL');
-            } else {
-                res1.textContent = 'PASS';
-                res1.classList.add('pass');
-                console.log('PASS');
             }
         } else {
             // the image is hidden
@@ -80,7 +122,6 @@ window.addEventListener('load', (event) => {
          */
     }
     
-    var dpi = window.devicePixelRatio * 96;
     var imgs = document.querySelectorAll("img:not([src=''])");
     imgs.forEach( (img) => {
         ratioIsCorrect(img);
