@@ -119,6 +119,13 @@ window.addEventListener('load', (event) => {
          * of 266 DPI, and an element is placed on the screen with a width of 96px, the actual 
          * width of the element would be 266 device pixels.
          * https://developer.mozilla.org/en-US/docs/Glossary/CSS_pixel
+         * 
+         * How to make images retina ready
+         * https://premium.wpmudev.org/blog/make-images-retina-ready/
+         * 
+         * More on responsive images
+         * https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images
+         * 
          */
     }
     
