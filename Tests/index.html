@@ -25,35 +25,36 @@
 <body>
 	<div id="full-size-display-none">
 		<h1>Full size, display none</h1>
-		<img src="1280x1600.jpg" style="display:none" style="width: 160px">
+		<img src="1280x1600.jpg" style="display:none" style="width: 160px" loading="lazy">
 		<p>Test Result: <span class="res1"></span></p>
 	</div>
 	<div id="full-size">
-		<h1>Full size</h1>
-		<img src="1280x1600.jpg" style="width: 160px">
+		<h1>Full size (ratio 4)</h1>
+		<img src="1280x1600.jpg" style="width: 160px" loading="lazy">
 		<p>Test Result: <span class="res1"></span></p>
 	</div>
 	<div id="half-size">
-		<h1>Half size</h1>
-		<img src="640x800.jpg" style="width: 160px">
+		<h1>Half size (ratio 3)</h1>
+		<img src="640x800.jpg" style="width: 160px" loading="lazy">
 		<p>Test Result: <span class="res1"></span></p>
 	</div>
 	<div id="quarter-size">
-		<h1>Quarter size</h1>
-		<img src="320x400.jpg" style="width: 160px">
+		<h1>Quarter size (ratio 2)</h1>
+		<img src="320x400.jpg" style="width: 160px" loading="lazy">
 		<p>Test Result: <span class="res1"></span></p>
 	</div>
 	<div id="eighth-size">
-		<h1>Eighth size</h1>
-		<img src="160x200.jpg" style="width: 160px">
+		<h1>Eighth size (ratio 1)</h1>
+		<img src="160x200.jpg" style="width: 160px" loading="lazy">
 		<p>Test Result: <span class="res1"></span></p>
 	</div>
 	<div id="srcset">
-		<h1>Test srcset Attribute</h1>
+		<h1>Test srcset Attribute (all ratios)</h1>
 		<img 
-			src="1280x1600.jpg" 
-			srcset="160x200.jpg, 320x400.jpg 2x, 640x800.jpg 3x, 1280x1600.jpg 4x"
+			src="160x200.jpg" 
+			srcset="320x400.jpg 2x, 640x800.jpg 3x, 1280x1600.jpg 4x"
 			style="width: 160px"
+			loading="lazy"
 		>
 		<p>Test Result: <span class="res1"></span></p>
 	</div>
