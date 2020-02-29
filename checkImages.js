@@ -83,22 +83,9 @@ var hasMinimumDisplayResolution = (imgObj) => {
 var checkImgResolution = (img) => {
     if(img.offsetWidth > 0) {
         let maxWidthForDevice = getMaxWidthForDevice({img: img, imageNaturalWidth: getNaturalWidth(img)});
-        let res1 = document.querySelector(`#${img.parentNode.getAttribute('id')} span.res1`);
         if(hasMinimumDisplayResolution({img: img, maxWidthForDevice: maxWidthForDevice})) {
-            res1.textContent = 'PASS';
-            res1.classList.add('pass');
             console.log('PASS');
         } else {
-            res1.textContent = 'FAIL';
-            res1.classList.add('fail');
-            let expectedWidth = document.createElement('p');
-            let actualWidth = document.createElement('p');
-            expectedWidth.classList.add("fail");
-            actualWidth.classList.add("fail");
-            expectedWidth.textContent = `Expected width: ${maxWidthForDevice}px or less`;
-            actualWidth.textContent = `Actual width: ${img.width}px`;
-            res1.insertAdjacentElement("afterend", expectedWidth);
-            expectedWidth.insertAdjacentElement("afterend", actualWidth);
             console.log('FAIL');
         }
     } else {
