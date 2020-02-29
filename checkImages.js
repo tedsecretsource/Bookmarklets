@@ -123,7 +123,7 @@ var printResults = (img) => {
         let resultsContainer = document.createElement('div');
         resultsContainer.classList.add('feedback');
         resultsContainer.classList.add(imageHasCorrectResolution.toString());
-        resultsContainer.setAttribute('style', `top: -${img.height}px; width: ${img.width}px;`);
+        resultsContainer.setAttribute('style', `top: -${img.height}px; width: ${img.width - 10}px;`);
         resultsContainer.textContent = `max width: ${maxWidthForDevice}px
 actual width: ${img.width}px`;
         img.insertAdjacentElement('afterend', resultsContainer);
