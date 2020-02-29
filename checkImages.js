@@ -147,6 +147,8 @@ var addStyleDeclaration = () => {
 		min-width: 10em;
         display: flex;
         white-space: pre;
+        line-height: 1.25em;
+        text-align: left;
 	}
 	.false {
 		color: rgb(253, 133, 133);
