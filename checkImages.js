@@ -86,7 +86,7 @@ var hasMinimumDisplayResolution = (imgObj) => {
  */
 var checkImgResolution = (img) => {
     if(img.offsetWidth > 0) {
-        let maxWidthForDevice = getMaxWidthForDevice({img: img, imageNaturalWidth: getNaturalWidth(img)});
+        let maxWidthForDevice = getMaxWidthForDevice(img);
         if(hasMinimumDisplayResolution({img: img, maxWidthForDevice: maxWidthForDevice})) {
             console.log('PASS');
             return true;
@@ -122,7 +122,7 @@ var checkImgResolution = (img) => {
 
 var printResults = (img) => {
     let resultsContainer = document.createElement('div');
-    let maxWidthForDevice = getMaxWidthForDevice({img: img, imageNaturalWidth: getNaturalWidth(img)});
+    let maxWidthForDevice = getMaxWidthForDevice(img);
     resultsContainer.setAttribute('style', `position: relative; display: flex; min-width: 100px; top: -${img.height}px; left: 0px; width: ${img.width}px; background-color: black; color: white;`);
     resultsContainer.textContent = `${checkImgResolution(img)}: max width = ${maxWidthForDevice}px - actual width: ${img.width}px`;
     img.parentNode.appendChild(resultsContainer);
