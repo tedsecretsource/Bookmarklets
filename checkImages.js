@@ -119,7 +119,7 @@ var checkImgResolution = (img) => {
 var printResults = (img) => {
     let maxWidthForDevice = getMaxWidthForDevice(img);
     let imageHasCorrectResolution = checkImgResolution(img);
-    if(maxWidthForDevice > 0) {
+    if(maxWidthForDevice > 0 && typeof imageHasCorrectResolution !== "undefined") {
         let resultsContainer = document.createElement('div');
         resultsContainer.classList.add('feedback');
         resultsContainer.classList.add(imageHasCorrectResolution.toString());
