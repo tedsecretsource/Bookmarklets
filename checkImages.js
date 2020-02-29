@@ -123,7 +123,7 @@ var printResults = (img) => {
         let resultsContainer = document.createElement('div');
         resultsContainer.classList.add('feedback');
         resultsContainer.classList.add(imageHasCorrectResolution.toString());
-        resultsContainer.setAttribute('style', `top: -${img.height}px; width: ${img.width - 10}px;`);
+        resultsContainer.setAttribute('style', `top: -${img.height}px; width: ${img.width}px;`);
         resultsContainer.textContent = `max width: ${maxWidthForDevice}px
 actual width: ${img.width}px`;
         img.insertAdjacentElement('afterend', resultsContainer);
@@ -164,6 +164,9 @@ var addStyleDeclaration = () => {
 var runRetinaTest = () => {
     let imgs = document.querySelectorAll("img:not([src=''])");
     let i = 0;
+    document.querySelectorAll('.feedback').forEach((div) => {
+        div.parentNode.removeChild(div);
+    })
     addStyleDeclaration();
     imgs.forEach( (img) => {
         img.setAttribute('data-imgid', `id_${i}`);
