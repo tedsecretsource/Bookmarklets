@@ -168,12 +168,14 @@ var runRetinaTest = () => {
     imgs.forEach( (img) => {
         img.setAttribute('data-imgid', `id_${i}`);
         img.setAttribute('data-max-width', getMaxWidthForDevice(img));
+        let height = img.height;
         img.addEventListener("mouseover", (event) => {
             event.currentTarget.style.maxWidth = `${getMaxWidthForDevice(img)}px`;
             event.currentTarget.style.height = 'auto';
         });
         img.addEventListener("mouseout", (event) => {
             event.currentTarget.style.maxWidth = 'none';
+            event.currentTarget.style.height = `${height}px`;
         });
         ratioIsCorrect(img);
         printResults(img);
