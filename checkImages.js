@@ -167,6 +167,7 @@ var runRetinaTest = () => {
         img.setAttribute('data-max-width', getMaxWidthForDevice(img));
         img.addEventListener("mouseover", (event) => {
             event.currentTarget.style.maxWidth = `${getMaxWidthForDevice(img)}px`;
+            event.currentTarget.style.height = 'auto';
         });
         img.addEventListener("mouseout", (event) => {
             event.currentTarget.style.maxWidth = 'none';
