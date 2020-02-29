@@ -118,8 +118,8 @@ var checkImgResolution = (img) => {
 
 var printResults = (img) => {
     let resultsContainer = document.createElement('div');
-    resultsContainer.setAttribute('style', `position: relative; display: flex; min-width: 100px; top: 0px; left: 0px; width: ${img.width}; background-color: black; color: white;`);
-    resultsContainer.textContent = checkImgResolution(img);
+    resultsContainer.setAttribute('style', `position: relative; display: flex; min-width: 100px; top: -${img.height}px; left: 0px; width: ${img.width}px; background-color: black; color: white;`);
+    resultsContainer.textContent = `${checkImgResolution(img)}: max width = ${getMaxWidthForDevice(img)}px - actual width: ${img.width}px`;
     img.parentNode.appendChild(resultsContainer);
 }
 
