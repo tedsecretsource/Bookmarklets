@@ -41,6 +41,7 @@ var getNaturalWidth = (img) => {
         imageNaturalWidth = tempimg.naturalWidth;
         document.querySelector('body').removeChild(tempimg);
     }
+    console.log({imageNaturalWidth});
     return imageNaturalWidth;
 }
 
@@ -57,6 +58,7 @@ var getNaturalWidth = (img) => {
  * @returns Integer The maximum width of the image in pixels for this device
  */
 var getMaxWidthForDevice = (img) => {
+    console.log(getNaturalWidth(img) / window.devicePixelRatio);
     return Math.floor(getNaturalWidth(img) / window.devicePixelRatio);
 }
 
@@ -69,8 +71,10 @@ var hasMinimumDisplayResolution = (imgObj) => {
     let img = imgObj.img;
     let maxWidthForDevice = imgObj.maxWidthForDevice;
     if(maxWidthForDevice >= img.width) {
+        console.log('PASS');
         return true;
     } else {
+        console.log('FAIL');
         return false;
     }
 }
