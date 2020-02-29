@@ -15,7 +15,7 @@ var ratioIsCorrect = (img) => {
     let style = window.getComputedStyle(img);
     if( ratio > 0 && Math.abs(ratio - naturalRatio) >= 0.02 && '' === style.objectFit ) {
         // return false;
-        console.log(`${img.src} has incorrect ratio. Off by ${ratio - naturalRatio}`);
+        console.log(`${img.dataset.imgid} has incorrect ratio. Off by ${ratio - naturalRatio}`);
         console.log(img.src, img.alt, style.objectFit);
         // img.style.border = '2px solid red';
         let elem = document.createElement('div');
@@ -41,7 +41,6 @@ var getNaturalWidth = (img) => {
         imageNaturalWidth = tempimg.naturalWidth;
         document.querySelector('body').removeChild(tempimg);
     }
-    console.log({imageNaturalWidth});
     return imageNaturalWidth;
 }
 
@@ -58,7 +57,6 @@ var getNaturalWidth = (img) => {
  * @returns Integer The maximum width of the image in pixels for this device
  */
 var getMaxWidthForDevice = (img) => {
-    console.log(getNaturalWidth(img) / window.devicePixelRatio);
     return Math.floor(getNaturalWidth(img) / window.devicePixelRatio);
 }
 
@@ -71,10 +69,8 @@ var hasMinimumDisplayResolution = (imgObj) => {
     let img = imgObj.img;
     let maxWidthForDevice = imgObj.maxWidthForDevice;
     if(maxWidthForDevice >= img.width) {
-        console.log('PASS');
         return true;
     } else {
-        console.log('FAIL');
         return false;
     }
 }
@@ -121,18 +117,63 @@ var checkImgResolution = (img) => {
 }
 
 var printResults = (img) => {
-    let resultsContainer = document.createElement('div');
     let maxWidthForDevice = getMaxWidthForDevice(img);
-    resultsContainer.setAttribute('style', `position: relative; display: flex; min-width: 100px; top: -${img.height}px; left: 0px; width: ${img.width}px; background-color: black; color: white;`);
-    resultsContainer.textContent = `${checkImgResolution(img)}: max width = ${maxWidthForDevice}px - actual width: ${img.width}px`;
-    img.parentNode.appendChild(resultsContainer);
+    let imageHasCorrectResolution = checkImgResolution(img);
+    if(maxWidthForDevice > 0) {
+        let resultsContainer = document.createElement('div');
+        resultsContainer.classList.add('feedback');
+        resultsContainer.classList.add(imageHasCorrectResolution.toString());
+        resultsContainer.setAttribute('style', `top: -${img.height}px; width: ${img.width - 10}px;`);
+        resultsContainer.textContent = `max width: ${maxWidthForDevice}px\nactual width: ${img.width}px`;
+        img.insertAdjacentElement('afterend', resultsContainer);
+    } else {
+        console.log(`Image ${img.dataset.imgid} is not currently visible.`);
+    }
+}
+
+var addStyleDeclaration = () => {
+    const styleElem = document.createElement('style');
+    const styles = `
+	.feedback {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12px;
+		position: relative;
+		top: 0px;
+		left: 0px;
+		background-color: rgba(0, 0, 0, 0.7);
+		color: white;
+		padding: 5px;
+		min-width: 10em;
+        display: flex;
+        white-space: pre;
+	}
+	.false {
+		color: rgb(253, 133, 133);
+	}
+	.true {
+		color: rgb(176, 255, 176);
+    }
+    `;
+    styleElem.textContent = styles;
+    document.querySelector('head').appendChild(styleElem);
 }
 
 var runRetinaTest = () => {
-    var imgs = document.querySelectorAll("img:not([src=''])");
+    let imgs = document.querySelectorAll("img:not([src=''])");
+    let i = 0;
+    addStyleDeclaration();
     imgs.forEach( (img) => {
+        img.setAttribute('data-imgid', `id_${i}`);
+        img.setAttribute('data-max-width', getMaxWidthForDevice(img));
+        img.addEventListener("mouseover", (event) => {
+            event.currentTarget.style.maxWidth = `${getMaxWidthForDevice(img)}px`;
+        });
+        img.addEventListener("mouseout", (event) => {
+            event.currentTarget.style.maxWidth = 'none';
+        });
         ratioIsCorrect(img);
         printResults(img);
+        i++;
     });
 }
 
