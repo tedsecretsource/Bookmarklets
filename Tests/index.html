@@ -12,13 +12,25 @@
 	img {
 		object-fit: contain;
 	} */
+	.feedback {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12px;
+		position: relative;
+		top: 0px;
+		left: 0px;
+		background-color: rgba(0, 0, 0, 0.7);
+		color: white;
+		padding: 5px;
+		min-width: 10em;
+		display: flex;
+	}
 	.fail {
-		color: red;
+		color: rgb(253, 133, 133);
+	}
+	.pass {
+		color: rgb(176, 255, 176);
 	}
 
-	.pass {
-		color: green;
-	}
 	</style>
 	<script defer src="../checkImages.js?v=2"></script>
 </head>
@@ -26,27 +38,22 @@
 	<div id="full-size-display-none">
 		<h1>Full size, display none</h1>
 		<img src="1280x1600.jpg" style="display:none" style="width: 160px" loading="lazy">
-		<p>Test Result: <span class="res1"></span></p>
 	</div>
 	<div id="full-size">
 		<h1>Full size (ratio 4)</h1>
 		<img src="1280x1600.jpg" style="width: 160px" loading="lazy">
-		<p>Test Result: <span class="res1"></span></p>
 	</div>
 	<div id="half-size">
 		<h1>Half size (ratio 3)</h1>
 		<img src="640x800.jpg" style="width: 160px" loading="lazy">
-		<p>Test Result: <span class="res1"></span></p>
 	</div>
 	<div id="quarter-size">
 		<h1>Quarter size (ratio 2)</h1>
 		<img src="320x400.jpg" style="width: 160px" loading="lazy">
-		<p>Test Result: <span class="res1"></span></p>
 	</div>
 	<div id="eighth-size">
 		<h1>Eighth size (ratio 1)</h1>
 		<img src="160x200.jpg" style="width: 160px" loading="lazy">
-		<p>Test Result: <span class="res1"></span></p>
 	</div>
 	<div id="srcset">
 		<h1>Test srcset Attribute (all ratios)</h1>
@@ -56,7 +63,6 @@
 			style="width: 160px"
 			loading="lazy"
 		>
-		<p>Test Result: <span class="res1"></span></p>
 	</div>
 </body>
 </html>
