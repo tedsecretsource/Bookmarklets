@@ -57,7 +57,7 @@ var getNaturalWidth = (img) => {
  * @returns Integer The maximum width of the image in pixels for this device
  */
 var getMaxWidthForDevice = (img) => {
-    return Math.floor(img.imageNaturalWidth / window.devicePixelRatio);
+    return Math.floor(getNaturalWidth(img) / window.devicePixelRatio);
 }
 
 /**
