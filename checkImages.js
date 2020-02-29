@@ -188,4 +188,5 @@ var runRetinaTest = () => {
     });
 }
 
-window.addEventListener('load',(event)=>{runRetinaTest();});
+runRetinaTest();
+// window.addEventListener('load',(event)=>{runRetinaTest();});
