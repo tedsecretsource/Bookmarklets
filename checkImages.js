@@ -175,10 +175,12 @@ var runRetinaTest = () => {
         img.addEventListener("mouseover", (event) => {
             event.currentTarget.style.maxWidth = `${getMaxWidthForDevice(img)}px`;
             event.currentTarget.style.height = 'auto';
+            event.currentTarget.nextSibling.style.visibility = 'hidden';
         });
         img.addEventListener("mouseout", (event) => {
             event.currentTarget.style.maxWidth = 'none';
             event.currentTarget.style.height = `${height}px`;
+            event.currentTarget.nextSibling.style.visibility = 'visible';
         });
         ratioIsCorrect(img);
         printResults(img);
@@ -186,6 +188,4 @@ var runRetinaTest = () => {
     });
 }
 
-window.addEventListener('load', (event) => {
-    runRetinaTest();
-});
+window.addEventListener('load',(event)=>{runRetinaTest();});
