@@ -85,8 +85,10 @@ var checkImgResolution = (img) => {
         let maxWidthForDevice = getMaxWidthForDevice({img: img, imageNaturalWidth: getNaturalWidth(img)});
         if(hasMinimumDisplayResolution({img: img, maxWidthForDevice: maxWidthForDevice})) {
             console.log('PASS');
+            return true;
         } else {
             console.log('FAIL');
+            return false;
         }
     } else {
         // the image is hidden
@@ -114,11 +116,18 @@ var checkImgResolution = (img) => {
      */
 }
 
+var printResults = (img) => {
+    let resultsContainer = document.createElement('div');
+    resultsContainer.setAttribute('style', `position: relative; display: flex; min-width: 100px; top: 0px; left: 0px; width: ${img.width}; background-color: black; color: white;`);
+    resultsContainer.textContent = checkImgResolution(img);
+    img.parentNode.appendChild(resultsContainer);
+}
+
 var runRetinaTest = () => {
     var imgs = document.querySelectorAll("img:not([src=''])");
     imgs.forEach( (img) => {
         ratioIsCorrect(img);
-        checkImgResolution(img);
+        printResults(img);
     });
 }
 
