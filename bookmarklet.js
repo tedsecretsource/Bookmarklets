@@ -1,1 +1,1 @@
-javascript:(function(){s=document.createElement('script');s.type='text/javascript';s.src='https://tedsecretsource.github.io/Bookmarklets/checkImages.js?v='+parseInt(Math.random()*99999999);document.body.appendChild(s);})();
+javascript:(function(){if(null==document.querySelector('script[src^="https://tedsecret"]')){let s=document.createElement('script');s.type='text/javascript';s.src='https://tedsecretsource.github.io/Bookmarklets/bookmarklet.js?v='+parseInt(Math.random()*99999999);document.body.appendChild(s);}else{runRetinaTest();}})();
