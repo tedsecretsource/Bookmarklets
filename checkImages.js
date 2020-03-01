@@ -9,7 +9,7 @@
  * @param {img} An image element from the source
  * @returns True if the display ratio is the same as the natural ratio, false otherwise
  */
-var ratioIsCorrect = (img) => {
+const ratioIsCorrect = (img) => {
     let ratio = img.width / img.height;
     let naturalRatio = img.naturalWidth / img.naturalHeight;
     let style = window.getComputedStyle(img);
@@ -31,7 +31,7 @@ var ratioIsCorrect = (img) => {
  * @param {*} img
  * @returns Integer The actual width of the source image
  */
-var getNaturalWidth = (img) => {
+const getNaturalWidth = (img) => {
     let imageNaturalWidth = img.naturalWidth;
     if(img.srcset !== '') {
         let tempimg = document.createElement('img');
@@ -56,7 +56,7 @@ var getNaturalWidth = (img) => {
  * @param {*} img 
  * @returns Integer The maximum width of the image in pixels for this device
  */
-var getMaxWidthForDevice = (img) => {
+const getMaxWidthForDevice = (img) => {
     return Math.floor(getNaturalWidth(img) / window.devicePixelRatio);
 }
 
@@ -65,7 +65,7 @@ var getMaxWidthForDevice = (img) => {
  * display at the specified width without noticable loss of quality
  * @param {*} imgObj 
  */
-var hasMinimumDisplayResolution = (imgObj) => {
+const hasMinimumDisplayResolution = (imgObj) => {
     let img = imgObj.img;
     let maxWidthForDevice = imgObj.maxWidthForDevice;
     if(maxWidthForDevice >= img.width) {
@@ -80,7 +80,7 @@ var hasMinimumDisplayResolution = (imgObj) => {
  * naturalWidth and naturalHeight are the size of the image if there is no bounding box constraining it (which there almost always is)
  * width and height are either the actual screen pixel width and height or whatever is specified in the corresponding attributes
  */
-var checkImgResolution = (img) => {
+const checkImgResolution = (img) => {
     if(img.offsetWidth > 0) {
         let maxWidthForDevice = getMaxWidthForDevice(img);
         if(hasMinimumDisplayResolution({img: img, maxWidthForDevice: maxWidthForDevice})) {
@@ -116,7 +116,7 @@ var checkImgResolution = (img) => {
      */
 }
 
-var printResults = (img) => {
+const printResults = (img) => {
     let maxWidthForDevice = getMaxWidthForDevice(img);
     let imageHasCorrectResolution = checkImgResolution(img);
     if(maxWidthForDevice > 0 && typeof imageHasCorrectResolution !== "undefined") {
@@ -124,15 +124,15 @@ var printResults = (img) => {
         resultsContainer.classList.add('feedback');
         resultsContainer.classList.add(imageHasCorrectResolution.toString());
         resultsContainer.setAttribute('style', `top: -${img.height}px; width: ${img.width - 10}px;`);
-        resultsContainer.textContent = `max width: ${maxWidthForDevice}px
-actual width: ${img.width}px`;
+        resultsContainer.textContent = `Max Width: ${maxWidthForDevice}px
+Actual Width: ${img.width}px`;
         img.insertAdjacentElement('afterend', resultsContainer);
     } else {
         console.log(`Image ${img.dataset.imgid} is not currently visible.`);
     }
 }
 
-var addStyleDeclaration = () => {
+const addStyleDeclaration = () => {
     const styleElem = document.createElement('style');
     const styles = `
 	.feedback {
@@ -161,26 +161,51 @@ var addStyleDeclaration = () => {
     document.querySelector('head').appendChild(styleElem);
 }
 
-var runRetinaTest = () => {
+
+
+const runRetinaTest = () => {
     let imgs = document.querySelectorAll("img:not([src=''])");
     let i = 0;
     document.querySelectorAll('.feedback').forEach((div) => {
         div.parentNode.removeChild(div);
+    })
+    document.querySelectorAll('.proper-size').forEach((img) => {
+        img.parentNode.removeChild(img);
     })
     addStyleDeclaration();
     imgs.forEach( (img) => {
         img.setAttribute('data-imgid', `id_${i}`);
         img.setAttribute('data-max-width', getMaxWidthForDevice(img));
         let height = img.height;
-        img.addEventListener("mouseover", (event) => {
-            event.currentTarget.style.maxWidth = `${getMaxWidthForDevice(img)}px`;
-            event.currentTarget.style.height = 'auto';
-            event.currentTarget.nextSibling.style.visibility = 'hidden';
+        let backgroundColor = img.style.backgroundColor;
+        const correctlySizedImage = img.cloneNode(false);
+        correctlySizedImage.style.pointerEvents = 'none';
+        correctlySizedImage.style.display = 'none';
+        correctlySizedImage.style.height = 'auto';
+        correctlySizedImage.style.position = 'relative';
+        correctlySizedImage.style.top = `-${img.height}px`;
+        correctlySizedImage.classList.add("proper-size");
+        correctlySizedImage.style.maxWidth = `${getMaxWidthForDevice(img)}px`;
+        let left = getMaxWidthForDevice(img) > img.width === true ? -((getMaxWidthForDevice(img) - img.width) / 2) : ((img.width - getMaxWidthForDevice(img)) / 2);
+        correctlySizedImage.style.left = `${left}px`;
+        if(getMaxWidthForDevice(img) > img.width) {
+            correctlySizedImage.style.width = correctlySizedImage.style.maxWidth;
+        }
+        img.insertAdjacentElement('afterend', correctlySizedImage);
+
+        img.addEventListener("mouseenter", (event) => {
+            // event.currentTarget.nextSibling.style.visibility = 'hidden';
+            event.currentTarget.style.backgroundColor = "white";
+            event.currentTarget.style.opacity = 0.1;
+            correctlySizedImage.style.display = 'flex';
         });
-        img.addEventListener("mouseout", (event) => {
-            event.currentTarget.style.maxWidth = 'none';
-            event.currentTarget.style.height = `${height}px`;
-            event.currentTarget.nextSibling.style.visibility = 'visible';
+        img.addEventListener("mouseleave", (event) => {
+            // event.currentTarget.style.maxWidth = 'none';
+            // event.currentTarget.style.height = `${height}px`;
+            // event.currentTarget.nextSibling.style.visibility = 'visible';
+            event.currentTarget.style.backgroundColor = backgroundColor;
+            event.currentTarget.style.opacity = 1;
+            correctlySizedImage.style.display = 'none';
         });
         ratioIsCorrect(img);
         printResults(img);
@@ -189,4 +214,3 @@ var runRetinaTest = () => {
 }
 
 runRetinaTest();
-// window.addEventListener('load',(event)=>{runRetinaTest();});
