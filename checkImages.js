@@ -1,3 +1,12 @@
+// get document coordinates of the element
+function getCoords(elem) {
+    let box = elem.getBoundingClientRect();
+    return {
+        top: box.top + window.pageYOffset,
+        left: box.left + window.pageXOffset
+    };
+}
+
 /**
  * Determine if the display ratio of an image is the same as its
  * natural ratio
@@ -113,17 +122,21 @@ const checkImgResolution = (img) => {
      * More on responsive images
      * https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images
      * 
+     * And this on positioning elements
+     * https://javascript.info/coordinates
+     * 
      */
 }
 
 const printResults = (img) => {
     let maxWidthForDevice = getMaxWidthForDevice(img);
     let imageHasCorrectResolution = checkImgResolution(img);
+    let coords = getCoords(img);
     if(maxWidthForDevice > 0 && typeof imageHasCorrectResolution !== "undefined") {
         let resultsContainer = document.createElement('div');
         resultsContainer.classList.add('feedback');
         resultsContainer.classList.add(imageHasCorrectResolution.toString());
-        resultsContainer.setAttribute('style', `top: -${img.height}px; width: ${img.width - 10}px;`);
+        resultsContainer.setAttribute('style', `top: ${img.offsetTop}px; left: ${img.offsetLeft}px; width: ${img.width}px;`);
         resultsContainer.textContent = `Max Width: ${maxWidthForDevice}px
 Actual Width: ${img.width}px`;
         img.insertAdjacentElement('afterend', resultsContainer);
@@ -138,7 +151,7 @@ const addStyleDeclaration = () => {
 	.feedback {
 		font-family: Arial, Helvetica, sans-serif;
 		font-size: 12px;
-		position: relative;
+		position: absolute;
 		top: 0px;
 		left: 0px;
 		background-color: rgba(0, 0, 0, 0.7);
@@ -149,6 +162,7 @@ const addStyleDeclaration = () => {
         white-space: pre;
         line-height: 1.25em;
         text-align: left;
+        z-index: 10;
 	}
 	.false {
 		color: rgb(253, 133, 133);
@@ -174,6 +188,13 @@ const runRetinaTest = () => {
     })
     addStyleDeclaration();
     imgs.forEach( (img) => {
+        // create a wrapper div to control display of feedback
+        let wrapper = document.createElement('div');
+        wrapper.setAttribute('style', 'position: relative;');
+        wrapper.setAttribute('id', `id_${i}`);
+        img.parentNode.insertBefore(wrapper, img);
+        wrapper.appendChild(img);
+
         img.setAttribute('data-imgid', `id_${i}`);
         img.setAttribute('data-max-width', getMaxWidthForDevice(img));
         let height = img.height;
@@ -182,27 +203,26 @@ const runRetinaTest = () => {
         correctlySizedImage.style.pointerEvents = 'none';
         correctlySizedImage.style.display = 'none';
         correctlySizedImage.style.height = 'auto';
-        correctlySizedImage.style.position = 'relative';
-        correctlySizedImage.style.top = `-${img.height}px`;
+        correctlySizedImage.style.position = 'absolute';
+        correctlySizedImage.style.border = '1px solid black;';
+        correctlySizedImage.style.zIndex = 10;
+        correctlySizedImage.style.top = `${img.offsetTop}px`;
         correctlySizedImage.classList.add("proper-size");
         correctlySizedImage.style.maxWidth = `${getMaxWidthForDevice(img)}px`;
-        let left = getMaxWidthForDevice(img) > img.width === true ? -((getMaxWidthForDevice(img) - img.width) / 2) : ((img.width - getMaxWidthForDevice(img)) / 2);
+        let left = getMaxWidthForDevice(img) > img.width === true ? (img.offsetLeft - (getMaxWidthForDevice(img) - img.width) / 2) : ((img.width - getMaxWidthForDevice(img)) / 2);
+        let display = img.style.display;
         correctlySizedImage.style.left = `${left}px`;
         if(getMaxWidthForDevice(img) > img.width) {
             correctlySizedImage.style.width = correctlySizedImage.style.maxWidth;
         }
         img.insertAdjacentElement('afterend', correctlySizedImage);
 
-        img.addEventListener("mouseenter", (event) => {
-            // event.currentTarget.nextSibling.style.visibility = 'hidden';
+        img.addEventListener("mouseover", (event) => {
             event.currentTarget.style.backgroundColor = "white";
             event.currentTarget.style.opacity = 0.1;
-            correctlySizedImage.style.display = 'flex';
+            correctlySizedImage.style.display = display;
         });
-        img.addEventListener("mouseleave", (event) => {
-            // event.currentTarget.style.maxWidth = 'none';
-            // event.currentTarget.style.height = `${height}px`;
-            // event.currentTarget.nextSibling.style.visibility = 'visible';
+        img.addEventListener("mouseout", (event) => {
             event.currentTarget.style.backgroundColor = backgroundColor;
             event.currentTarget.style.opacity = 1;
             correctlySizedImage.style.display = 'none';
