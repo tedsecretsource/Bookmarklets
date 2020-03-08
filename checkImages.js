@@ -54,6 +54,24 @@ const getNaturalWidth = (img) => {
 }
 
 /**
+ * Returns an integer representing the actual height of the source image
+ * @param {*} img
+ * @returns Integer The actual height of the source image
+ */
+const getNaturalHeight = (img) => {
+    let imageNaturalHeight = img.naturalHeight;
+    if(img.srcset !== '') {
+        let tempimg = document.createElement('img');
+        tempimg.setAttribute('src', img.currentSrc);
+        tempimg.setAttribute('style', 'margin-top: -5000px; margin-left: -5000px');
+        document.querySelector('body').appendChild(tempimg);
+        imageNaturalHeight = tempimg.naturalHeight;
+        document.querySelector('body').removeChild(tempimg);
+    }
+    return imageNaturalHeight;
+}
+
+/**
  * Returns an integer representing the maximum width of the image in
  * pixels for this device
  * 
@@ -67,6 +85,22 @@ const getNaturalWidth = (img) => {
  */
 const getMaxWidthForDevice = (img) => {
     return Math.floor(getNaturalWidth(img) / window.devicePixelRatio);
+}
+
+/**
+ * Returns an integer representing the maximum height of the image in
+ * pixels for this device
+ * 
+ * Given a DOM image object, get the maximum height the image can be
+ * displayed at for this device without noticable loss of quality.
+ * Note that to calculate this, we convert from natural pixel height
+ * to device pixel height.
+ * 
+ * @param {*} img 
+ * @returns Integer The maximum height of the image in pixels for this device
+ */
+const getMaxHeightForDevice = (img) => {
+    return Math.floor(getNaturalHeight(img) / window.devicePixelRatio);
 }
 
 /**
@@ -176,59 +210,75 @@ const addStyleDeclaration = () => {
 }
 
 
-
+/**
+ * 
+ */
 const runRetinaTest = () => {
-    let imgs = document.querySelectorAll("img:not([src=''])");
-    let i = 0;
     document.querySelectorAll('.feedback').forEach((div) => {
         div.parentNode.removeChild(div);
     })
     document.querySelectorAll('.proper-size').forEach((img) => {
         img.parentNode.removeChild(img);
     })
+    document.querySelectorAll('.check-images-wrapper').forEach((imgWrapper) => {
+        let grandParent = imgWrapper.parentNode;
+        let childImg = imgWrapper.querySelector('img');
+        grandParent.appendChild(childImg);
+        grandParent.removeChild(imgWrapper);
+    })
+    let imgs = document.querySelectorAll("img:not([src=''])");
+    let i = 0;
     addStyleDeclaration();
     imgs.forEach( (img) => {
-        // create a wrapper div to control display of feedback
-        let wrapper = document.createElement('div');
-        wrapper.setAttribute('style', 'position: relative;');
-        wrapper.setAttribute('id', `id_${i}`);
-        img.parentNode.insertBefore(wrapper, img);
-        wrapper.appendChild(img);
+        if(getMaxWidthForDevice(img) > 0) {
 
-        img.setAttribute('data-imgid', `id_${i}`);
-        img.setAttribute('data-max-width', getMaxWidthForDevice(img));
-        let height = img.height;
-        let backgroundColor = img.style.backgroundColor;
-        const correctlySizedImage = img.cloneNode(false);
-        correctlySizedImage.style.pointerEvents = 'none';
-        correctlySizedImage.style.display = 'none';
-        correctlySizedImage.style.height = 'auto';
-        correctlySizedImage.style.position = 'absolute';
-        correctlySizedImage.style.border = '1px solid black;';
-        correctlySizedImage.style.zIndex = 10;
-        correctlySizedImage.style.top = `${img.offsetTop}px`;
-        correctlySizedImage.classList.add("proper-size");
-        correctlySizedImage.style.maxWidth = `${getMaxWidthForDevice(img)}px`;
-        let left = getMaxWidthForDevice(img) > img.width === true ? (img.offsetLeft - (getMaxWidthForDevice(img) - img.width) / 2) : ((img.width - getMaxWidthForDevice(img)) / 2);
-        let display = img.style.display;
-        correctlySizedImage.style.left = `${left}px`;
-        if(getMaxWidthForDevice(img) > img.width) {
-            correctlySizedImage.style.width = correctlySizedImage.style.maxWidth;
-        }
-        img.insertAdjacentElement('afterend', correctlySizedImage);
-
-        img.addEventListener("mouseover", (event) => {
-            event.currentTarget.style.backgroundColor = "white";
-            event.currentTarget.style.opacity = 0.1;
-            correctlySizedImage.style.display = display;
-        });
-        img.addEventListener("mouseout", (event) => {
-            event.currentTarget.style.backgroundColor = backgroundColor;
-            event.currentTarget.style.opacity = 1;
+            // create a wrapper div to control display of feedback
+            let wrapper = document.createElement('div');
+            wrapper.setAttribute('style', 'position: relative;');
+            wrapper.setAttribute('id', `id_${i}`);
+            wrapper.setAttribute('class', 'check-images-wrapper');
+            img.parentNode.insertBefore(wrapper, img);
+            wrapper.appendChild(img);
+            
+            img.setAttribute('data-imgid', `id_${i}`);
+            img.setAttribute('data-max-width', getMaxWidthForDevice(img));
+            let height = img.height;
+            let backgroundColor = img.style.backgroundColor;
+            const correctlySizedImage = img.cloneNode(false);
+            correctlySizedImage.style.pointerEvents = 'none';
             correctlySizedImage.style.display = 'none';
-        });
-        ratioIsCorrect(img);
-        printResults(img);
+            correctlySizedImage.style.position = 'absolute';
+            correctlySizedImage.style.border = '1px solid black;';
+            correctlySizedImage.style.zIndex = 10;
+            correctlySizedImage.style.top = `${img.offsetTop}px`;
+            correctlySizedImage.classList.add("proper-size");
+            correctlySizedImage.style.width = `${getMaxWidthForDevice(img)}px`;
+            correctlySizedImage.style.maxWidth = `${getMaxWidthForDevice(img)}px`;
+            correctlySizedImage.style.minWidth = `${getMaxWidthForDevice(img)}px`;
+            correctlySizedImage.style.height = `${getMaxHeightForDevice(img)}px`;
+            correctlySizedImage.style.maxHeight = `${getMaxHeightForDevice(img)}px`;
+            correctlySizedImage.style.minHeight = `${getMaxHeightForDevice(img)}px`;
+            let left = getMaxWidthForDevice(img) > img.width === true ? (img.offsetLeft - (getMaxWidthForDevice(img) - img.width) / 2) : ((img.width - getMaxWidthForDevice(img)) / 2);
+            let display = img.style.display;
+            correctlySizedImage.style.left = `${left}px`;
+            if(getMaxWidthForDevice(img) > img.width) {
+                correctlySizedImage.style.width = correctlySizedImage.style.maxWidth;
+            }
+            img.insertAdjacentElement('afterend', correctlySizedImage);
+            
+            img.addEventListener("mouseover", (event) => {
+                event.currentTarget.style.backgroundColor = "white";
+                event.currentTarget.style.opacity = 0.1;
+                correctlySizedImage.style.display = display;
+            });
+            img.addEventListener("mouseout", (event) => {
+                event.currentTarget.style.backgroundColor = backgroundColor;
+                event.currentTarget.style.opacity = 1;
+                correctlySizedImage.style.display = 'none';
+            });
+            ratioIsCorrect(img);
+            printResults(img);
+        }
         i++;
     });
 }
